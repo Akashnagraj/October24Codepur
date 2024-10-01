@@ -1,4 +1,5 @@
 import 'package:codepur_hindi/screens/homepage.dart';
+import 'package:codepur_hindi/screens/login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,9 +12,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(useMaterial3: false),
       debugShowCheckedModeBanner: false,
-      home: CodePurHindi(),
+      routes: {
+        "/": (context) => LoginPage(),
+        "/login": (context) => LoginPage(),
+      },
     );
   }
 }
