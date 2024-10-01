@@ -6,7 +6,7 @@ class CodePurHindi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.pink.shade200,
+      backgroundColor: const Color.fromARGB(255, 67, 45, 53),
     );
   }
 }
