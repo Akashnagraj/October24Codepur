@@ -8,11 +8,21 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   String name = "";
-  bool isTapped = false;
+  bool changeButton = false;
 
-  void changePage() async {
-    await Future.delayed((Duration(seconds: 2)));
-    Navigator.pushNamed(context, MyRoutes.homeRoute);
+  final _myKey = GlobalKey<FormState>();
+
+  void movetoHome(BuildContext context) async {
+    if (_myKey.currentState!.validate()) {
+      setState(() {
+        changeButton = true;
+      });
+      await Future.delayed(Duration(seconds: 1));
+      Navigator.pushNamed(context, MyRoutes.homeRoute);
+      setState(() {
+        changeButton = false;
+      });
+    }
   }
 
   @override
@@ -24,8 +34,6 @@ class _LoginPageState extends State<LoginPage> {
             child: Container(
               width: double.infinity,
               child: Column(
-                // mainAxisAlignment: MainAxisAlignment.center,
-                // crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(
                     height: 20,
@@ -47,88 +55,96 @@ class _LoginPageState extends State<LoginPage> {
                   Padding(
                     padding: const EdgeInsets.only(
                         left: 25, right: 25, top: 10, bottom: 10),
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          decoration: InputDecoration(
-                            labelText: "Username",
-                            hintText: "Sangeetha Venkatesh, the Great",
-                            prefixIcon: Icon(Icons.verified_user),
-                            border: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 4.0),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              name = value;
-                            });
-                          },
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        TextFormField(
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            labelText: "Password",
-                            hintText: "S2Y",
-                            prefixIcon: Icon(
-                              Icons.password,
-                            ),
-                            border: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 4.0),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
+                    child: Form(
+                      key: _myKey,
+                      child: Column(
+                        children: [
+                          // USERNAME
 
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              isTapped = !isTapped;
-                              changePage();
-                            });
-                          },
-                          child: AnimatedContainer(
-                            height: isTapped ? 40 : 40,
-                            width: isTapped ? 40 : 120,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              shape: isTapped
-                                  ? BoxShape.circle
-                                  : BoxShape.rectangle,
-                              color: Colors.pink,
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: "Username",
+                              hintText: "Sangeetha Venkatesh, the Great",
+                              prefixIcon: Icon(Icons.verified_user),
+                              border: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.black, width: 4.0),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
                             ),
-                            duration: Duration(seconds: 2),
-                            child: isTapped
-                                ? Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                  )
-                                : Text(
-                                    "Login",
-                                    style: TextStyle(
-                                        fontSize: 18,
+                            onChanged: (value) {
+                              setState(() {
+                                name = value;
+                              });
+                            },
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "User name can't be empty";
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+
+                          // PASSWORD
+
+                          TextFormField(
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Please enter your password";
+                              } else if (value.length < 6) {
+                                return "Length should be greater than 6";
+                              }
+                              return null;
+                            },
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              labelText: "Password",
+                              hintText: "S2Y",
+                              prefixIcon: Icon(
+                                Icons.password,
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.black, width: 4.0),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Material(
+                            color: Colors.pink,
+                            borderRadius:
+                                BorderRadius.circular(changeButton ? 50 : 8),
+                            child: InkWell(
+                              splashColor: Colors.white,
+                              onTap: () => movetoHome(context),
+                              child: AnimatedContainer(
+                                duration: Duration(seconds: 1),
+                                alignment: Alignment.center,
+                                height: 50,
+                                width: changeButton ? 50 : 120,
+                                child: changeButton
+                                    ? Icon(
+                                        Icons.check,
                                         color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                          ),
-                        )
-
-                        // ElevatedButton(
-                        //   onPressed: () {
-                        //     Navigator.pushNamed(context, MyRoutes.homeRoute);
-                        //   },
-                        //   child: Text("Login"),
-                        //   style: TextButton.styleFrom(fixedSize: Size(120, 40)),
-                        // ),
-                      ],
+                                      )
+                                    : Text(
+                                        "Login",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   )
                 ],
